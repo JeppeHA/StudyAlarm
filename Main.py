@@ -18,7 +18,8 @@ print("-----------------------------------------------------------")
 print("Welcome to Study Alarm")
 print("Here are your options:")
 print("1. StartStudying")
-print("2. ExitStudying")
+print("2. See how long you studied each subject")
+print("3. ExitStudying")
 print("-----------------------------------------------------------")
 
 # Initialize pygame mixer
@@ -86,11 +87,41 @@ def BreakSession():
 
 
 
+def ReadTime():
+    query = """
+    SELECT 
+        Subject,
+        SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(EndSession, StartSession)))) AS total_time,
+        FLOOR(SUM(TIME_TO_SEC(TIMEDIFF(EndSession, StartSession))) / 3600) AS total_hours,
+        FLOOR(SUM(TIME_TO_SEC(TIMEDIFF(EndSession, StartSession))) % 3600 / 60) AS total_minutes
+    FROM 
+        studysessions
+    GROUP BY 
+        Subject;
+    """
+
+    cursor.execute(query)
+
+    results = cursor.fetchall()
+
+    print(f"{'Subject':<20}{'Total Time':<15}{'Total Hours':<12}{'Total Minutes':<15}")
+    print("=" * 60)
+
+    for row in results:
+        subject, total_time, total_hours, total_minutes = row
+        total_time_str = str(total_time)
+        print(f"{subject:<20}{total_time_str:<15}{total_hours:<12}{total_minutes:<15}")
+
+    cursor.close()
+
+
 
 user_choice = input("Enter your choice: ")
 if user_choice == "1":
     subject = input("What subject do you want to study?: ")
     StudySession()
 elif user_choice == "2":
+    ReadTime()
+elif user_choice == "3":
     cursor.close()
     quit()
