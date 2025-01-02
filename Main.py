@@ -104,13 +104,13 @@ def ReadTime():
 
     results = cursor.fetchall()
 
-    print(f"{'Subject':<20}{'Total Time':<15}{'Total Hours':<12}{'Total Minutes':<15}")
+    print(f"{'Subject':<20}{'Total Time':<15}")
     print("=" * 60)
 
     for row in results:
         subject, total_time, total_hours, total_minutes = row
         total_time_str = str(total_time)
-        print(f"{subject:<20}{total_time_str:<15}{total_hours:<12}{total_minutes:<15}")
+        print(f"{subject:<20}{total_time_str:<15}")
 
     cursor.close()
 
